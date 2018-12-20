@@ -1,10 +1,10 @@
 FROM haskell:8
 
-RUN git clone git@github.com:expectlabs/duckling-1.git
+RUN git clone https://github.com/vijay120/duckling-1.git
 
 RUN mkdir /log
 
-WORKDIR /duckling
+WORKDIR /duckling-1
 
 RUN apt-get update
 
