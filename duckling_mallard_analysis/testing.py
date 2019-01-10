@@ -20,6 +20,21 @@ def remove_role_and_sys(x):
         return x[4:]
 
 
+def get_entity_occurences(clean, labeled):
+    type_to_query = defaultdict(list)
+
+    for clean_query, labeled_query in zip(clean, labeled):
+        # Actual entity spans in the clean query
+        spans = []
+        entities = re.findall('{([^{]+)\|sys_[^\s]*}', labeled_query)
+        entity_labels = re.findall('{[^{]+\|(sys_[^\s]*)}', labeled_query)
+        entity_labels = [remove_role_and_sys(x) for x in entity_labels]
+
+        for e, label in zip(entities, entity_labels):
+            type_to_query[label].append((e, clean_query))
+
+    return type_to_query
+
 def get_expected_spans(clean, labeled):
     """
     Extract system entities from each query, with start, end, and label for each entity
@@ -94,6 +109,7 @@ def get_duckling_results(queries):
 
         data = {
             'text': query,
+            'latent': True
         }
 
         try:
@@ -395,3 +411,8 @@ if __name__ == "__main__":
     difference_count_totals = {}
     for dim, counts in difference_counts.items():
         difference_count_totals[dim] = sum(counts.values())
+
+
+    type_to_query = get_entity_occurences(queries_clean, queries_labeled)
+    with open('query_types.txt', 'w') as fout:
+        fout.write(pp.pformat(type_to_query))
