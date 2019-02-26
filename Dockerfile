@@ -1,6 +1,6 @@
 FROM haskell:8
 
-RUN git clone https://github.com/vijay120/duckling-1.git
+RUN git clone https://expectlabs:<insert-token>@github.com/expectlabs/duckling-1.git
 
 RUN mkdir /log
 
@@ -17,4 +17,4 @@ RUN stack setup
 # '-j1' flag to force the build to run sequentially.
 RUN stack build
 
-ENTRYPOINT stack exec duckling-example-exe
+ENTRYPOINT stack exec -- duckling-example-exe --port 7151
